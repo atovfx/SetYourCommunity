@@ -88,6 +88,21 @@ app.use('/api/conversations', conversationRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
+// Root route - API info
+app.get('/', (req, res) => {
+  res.json({
+    name: 'SetYourCommunity API',
+    version: '1.0.0',
+    status: 'running',
+    environment: process.env.NODE_ENV || 'development',
+    endpoints: {
+      health: '/health',
+      api: '/api',
+      docs: 'See API documentation'
+    }
+  });
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Route non trouvée' });
