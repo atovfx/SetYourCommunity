@@ -39,6 +39,18 @@ app.use(passport.initialize());
 // Static files (uploads)
 app.use('/uploads', express.static('uploads'));
 
+// Redirect root domain to www (if accessed without www)
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    const host = req.get('host') || '';
+    // If accessing root domain (without www) in production, redirect to www
+    if (host === 'setyourcommunity.fun' && !host.startsWith('www.')) {
+      return res.redirect(301, `https://www.setyourcommunity.fun${req.originalUrl}`);
+    }
+    next();
+  });
+}
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
