@@ -1,0 +1,111 @@
+================================================================================
+URLs À CONFIGURER DANS META DASHBOARD
+================================================================================
+
+📍 DÉVELOPPEMENT LOCAL
+================================================================================
+
+1. Valid OAuth Redirect URIs (Facebook Login → Settings)
+   
+   http://localhost:4000/auth/meta/callback
+
+
+2. App Domains (Settings → Basic)
+   
+   localhost
+
+
+3. Site URL (si demandé)
+   
+   http://localhost:5173
+
+4. Deauthorization Callback URL (Facebook Login → Settings)
+   
+   http://localhost:4000/auth/meta/deauthorize
+
+5. Data Deletion Callback URL (Facebook Login → Settings)
+   
+   http://localhost:4000/privacy/delete
+
+================================================================================
+
+📍 PRODUCTION (app.setyourcommunity.fun)
+================================================================================
+
+1. Valid OAuth Redirect URIs (Facebook Login → Settings)
+   
+   https://app.setyourcommunity.fun/auth/meta/callback
+   https://setyourcommunity.fun/auth/meta/callback
+
+
+2. App Domains (Settings → Basic)
+   
+   app.setyourcommunity.fun
+   setyourcommunity.fun
+
+
+3. Site URL (si demandé)
+   
+   https://app.setyourcommunity.fun
+
+4. Deauthorization Callback URL (Facebook Login → Settings)
+   
+   https://app.setyourcommunity.fun/auth/meta/deauthorize
+
+5. Data Deletion Callback URL (Facebook Login → Settings)
+   
+   https://app.setyourcommunity.fun/privacy/delete
+
+================================================================================
+
+📍 WEBHOOKS (optionnel pour MVP, nécessaire pour messages automatiques)
+================================================================================
+
+Instagram Webhook Callback URL:
+   
+   Production: https://app.setyourcommunity.fun/api/webhooks/instagram
+   Dev (ngrok): https://votre-id.ngrok.io/api/webhooks/instagram
+
+WhatsApp Webhook Callback URL:
+   
+   Production: https://app.setyourcommunity.fun/api/webhooks/whatsapp
+   Dev (ngrok): https://votre-id.ngrok.io/api/webhooks/whatsapp
+
+Verify Token (pour les deux):
+   
+   my_verify_token
+
+================================================================================
+
+⚠️  IMPORTANT
+================================================================================
+
+1. Les URLs doivent être EXACTES (pas d'espace, pas de slash final)
+2. Respecter le protocole (http pour local, https pour production)
+3. Respecter le port (4000 pour le backend local)
+4. Cliquer sur "Enregistrer" après chaque modification dans Meta Dashboard
+5. Redémarrer le backend après modification du .env
+6. Les 3 callbacks (OAuth, Deauthorization, Data Deletion) sont OBLIGATOIRES
+7. Mode strict URI doit être activé pour la sécurité
+
+================================================================================
+
+📋 CHECKLIST COMPLÈTE
+================================================================================
+
+□ App Meta créée sur developers.facebook.com
+□ Facebook Login ajouté et configuré
+□ Valid OAuth Redirect URIs configurées (3 URLs)
+□ App Domains configurés
+□ Deauthorization URL configurée
+□ Data Deletion URL configurée
+□ Instagram produit ajouté
+□ App ID copié dans backend/.env
+□ App Secret copié dans backend/.env
+□ Mode strict URI activé
+□ HTTPS imposé activé
+□ Backend redémarré
+
+================================================================================
+
+

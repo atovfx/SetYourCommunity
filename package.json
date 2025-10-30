@@ -1,0 +1,33 @@
+{
+  "name": "dm-manager",
+  "version": "1.0.0",
+  "description": "Service de gestion de DM Instagram et WhatsApp avec LLM personnalisable",
+  "main": "backend/dist/server.js",
+  "scripts": {
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "start": "cd backend && npm run start",
+    "heroku-postbuild": "cd backend && npm install && npm run build"
+  },
+  "keywords": [
+    "instagram",
+    "whatsapp",
+    "dm",
+    "chatbot",
+    "llm",
+    "openai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
+
+

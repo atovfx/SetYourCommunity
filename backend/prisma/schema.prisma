@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String?   @map("password_hash")
+  name          String
+  oauthProvider String?   @map("oauth_provider")
+  oauthId       String?   @map("oauth_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  
+  accounts      Account[]
+  
+  @@map("users")
+}
+
+enum Platform {
+  INSTAGRAM
+  WHATSAPP
+}
+
+model Account {
+  id           String    @id @default(uuid())
+  userId       String    @map("user_id")
+  platform     Platform
+  accessToken  String    @map("access_token")
+  accountName  String?   @map("account_name")
+  accountId    String?   @map("account_id")
+  phoneNumber  String?   @map("phone_number")
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  botConfiguration  BotConfiguration?
+  knowledgeBase     KnowledgeBase[]
+  conversations     Conversation[]
+  
+  @@map("accounts")
+}
+
+enum LLMProvider {
+  OPENAI
+  CLAUDE
+}
+
+model BotConfiguration {
+  id            String      @id @default(uuid())
+  accountId     String      @unique @map("account_id")
+  llmProvider   LLMProvider @default(OPENAI) @map("llm_provider")
+  model         String      @default("gpt-3.5-turbo")
+  systemPrompt  String?     @map("system_prompt") @db.Text
+  responseStyle String?     @map("response_style") @db.Text
+  mimics        String?     @db.Text
+  temperature   Float       @default(0.7)
+  maxTokens     Int         @default(500) @map("max_tokens")
+  autoReply     Boolean     @default(true) @map("auto_reply")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  
+  account       Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  @@map("bot_configurations")
+}
+
+enum KnowledgeType {
+  DOCUMENT
+  FAQ
+  TEXT
+}
+
+model KnowledgeBase {
+  id          String         @id @default(uuid())
+  accountId   String         @map("account_id")
+  title       String
+  content     String         @db.Text
+  fileUrl     String?        @map("file_url")
+  type        KnowledgeType  @default(DOCUMENT)
+  metadata    Json?
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+  
+  account     Account        @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  @@map("knowledge_base")
+}
+
+enum ConversationStatus {
+  ACTIVE
+  CONVERTED
+  CLOSED
+  MANUAL
+}
+
+model Conversation {
+  id          String              @id @default(uuid())
+  accountId   String              @map("account_id")
+  contactId   String              @map("contact_id")
+  contactName String?             @map("contact_name")
+  platform    Platform
+  status      ConversationStatus  @default(ACTIVE)
+  lastMessageAt DateTime?         @map("last_message_at")
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @updatedAt @map("updated_at")
+  
+  account     Account             @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  messages    Message[]
+  conversion  Conversion?
+  
+  @@unique([accountId, contactId])
+  @@map("conversations")
+}
+
+enum SenderType {
+  BOT
+  USER
+  CONTACT
+}
+
+model Message {
+  id              String       @id @default(uuid())
+  conversationId  String       @map("conversation_id")
+  senderType      SenderType   @map("sender_type")
+  content         String       @db.Text
+  messageId       String?      @map("message_id")
+  metadata        Json?
+  timestamp       DateTime     @default(now())
+  
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  @@map("messages")
+}
+
+model Conversion {
+  id              String       @id @default(uuid())
+  conversationId  String       @unique @map("conversation_id")
+  conversionDate  DateTime     @default(now()) @map("conversion_date")
+  revenue         Float?
+  notes           String?      @db.Text
+  createdAt       DateTime     @default(now()) @map("created_at")
+  
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  @@map("conversions")
+}
+
